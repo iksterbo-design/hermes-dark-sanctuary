@@ -609,6 +609,188 @@ body { background-color: #05070c; color: #f1f5f9; }
         transition-duration: 0.1s;
       }
     }
+
+    /* ============================================================
+       v3.6 WORKBENCH, ACOUSTIC DECK, AGENT STAGE & SECRET TRAPDOOR
+       ============================================================ */
+    dialog:modal { overscroll-behavior: contain; }
+    dialog::backdrop { overflow: hidden; overscroll-behavior: contain; }
+
+    html[data-compact="true"] header .min-h-\[360px\] { min-height: 210px !important; }
+    html[data-compact="true"] header p.leading-relaxed { display: none; }
+    html[data-reduced-motion="true"] *, html[data-reduced-motion="true"] *::before, html[data-reduced-motion="true"] *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) {
+        animation: none !important;
+      }
+    }
+
+    .eyrie-deck {
+      background: linear-gradient(180deg, rgba(12, 17, 29, 0.96) 0%, rgba(7, 10, 18, 0.98) 100%);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+      padding: 0.65rem 1rem;
+    }
+    .eyrie-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      min-height: 32px;
+      padding: 0.3rem 0.65rem;
+      border-radius: 0.5rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background-color: #0d1322;
+      border: 1px solid rgba(148, 163, 184, 0.26);
+      color: #e2e8f0;
+      cursor: pointer;
+      transition: border-color 0.16s ease, background-color 0.16s ease, transform 0.12s ease;
+    }
+    .eyrie-btn:hover { border-color: var(--aura-bright); color: #ffffff; }
+    .eyrie-btn.is-active, .eyrie-btn[aria-pressed="true"] {
+      background-color: rgba(139, 92, 246, 0.22);
+      border-color: var(--aura);
+      color: #ffffff;
+      box-shadow: 0 0 12px var(--aura-glow);
+    }
+    .eyrie-btn--panic {
+      background-color: rgba(220, 38, 38, 0.2);
+      border-color: rgba(248, 113, 113, 0.55);
+      color: #fecaca;
+    }
+    .eyrie-btn--panic:hover { background-color: rgba(220, 38, 38, 0.38); border-color: #f87171; }
+    .eyrie-btn--aura {
+      background-color: var(--aura);
+      border-color: var(--aura-bright);
+      color: #ffffff;
+    }
+    .eyrie-btn--trapdoor {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.28) 0%, rgba(16, 185, 129, 0.24) 50%, rgba(212, 168, 79, 0.28) 100%);
+      border: 1px solid rgba(251, 191, 36, 0.55);
+      color: #fde68a;
+    }
+
+    .eyrie-fx-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 55;
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+    .eyrie-fx-overlay.is-active { opacity: 1; }
+    .eyrie-fx-overlay__vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, transparent 48%, rgba(139, 92, 246, 0.34) 82%, rgba(220, 38, 38, 0.52) 100%);
+    }
+
+    .vram-tube {
+      position: relative;
+      height: 150px;
+      border-radius: 0.85rem;
+      background: #04070d;
+      border: 1px solid rgba(148, 163, 184, 0.26);
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+    }
+    .vram-tube__fill {
+      width: 100%;
+      background: linear-gradient(180deg, var(--aura-bright) 0%, var(--aura) 55%, #0ea5e9 100%);
+      transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+    }
+
+    .agent-split {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 1024px) {
+      .agent-split { grid-template-columns: 5fr 7fr; }
+    }
+    .agent-stage-viewport {
+      position: relative;
+      min-height: 350px;
+      background: #04070c;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      border-radius: 0.85rem;
+      padding: 0.9rem;
+      overflow: hidden;
+    }
+    .agent-cursor {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      z-index: 30;
+      pointer-events: none;
+      transition: transform 0.52s cubic-bezier(0.22, 1, 0.36, 1);
+      filter: drop-shadow(0 0 10px var(--aura));
+    }
+    .agent-cursor__ring {
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      width: 28px;
+      height: 28px;
+      border-radius: 9999px;
+      border: 2px solid #34d399;
+      opacity: 0;
+      transform: scale(0.5);
+    }
+    .agent-cursor.is-clicking .agent-cursor__ring {
+      animation: cursorPing 0.48s ease-out;
+    }
+    @keyframes cursorPing {
+      0% { opacity: 1; transform: scale(0.45); }
+      100% { opacity: 0; transform: scale(1.75); }
+    }
+
+    .trapdoor-dialog {
+      background: radial-gradient(circle at 50% 0%, #161129 0%, #060911 65%, #04060a 100%);
+      color: #f1f5f9;
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      border-radius: 1.15rem;
+      padding: 0;
+      width: min(1100px, calc(100vw - 1.25rem));
+      max-height: min(92dvh, 900px);
+      overflow-y: auto;
+      box-shadow: 0 36px 100px rgba(0, 0, 0, 0.95), 0 0 45px rgba(139, 92, 246, 0.28);
+    }
+    .trapdoor-dialog::backdrop {
+      background: rgba(2, 4, 9, 0.88);
+      backdrop-filter: blur(8px);
+    }
+    .keypad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.5rem;
+      max-width: 280px;
+      margin-inline: auto;
+    }
+    .keypad-btn {
+      min-height: 46px;
+      border-radius: 0.65rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 1rem;
+      font-weight: 800;
+      background: #0c1322;
+      border: 1px solid rgba(251, 191, 36, 0.32);
+      color: #fef3c7;
+      cursor: pointer;
+    }
+    .keypad-btn:hover {
+      background: rgba(251, 191, 36, 0.18);
+      border-color: #fbbf24;
+    }
+
   </style>
 </head>
 <body class="bg-[var(--background)] text-[var(--foreground)] antialiased m-0 p-0">
@@ -798,10 +980,90 @@ body { background-color: #05070c; color: #f1f5f9; }
               03 // TOKEN SANCTUARY
             </button>
             <button type="button" role="tab" id="tab-sim" class="dojo-tab" aria-selected="false">
-              04 // DOJO DRY-RUN
+              04 // CAVERN OPERATOR
+            </button>
+            <button type="button" role="tab" id="tab-vram" class="dojo-tab" aria-selected="false">
+              05 // VRAM LAB
+            </button>
+            <button type="button" role="tab" id="tab-forge" class="dojo-tab" aria-selected="false">
+              06 // PERSONA FORGE
+            </button>
+            <button type="button" role="tab" id="tab-vault" class="dojo-tab" aria-selected="false">
+              07 // SAVE VAULT
+            </button>
+            <button type="button" role="tab" id="tab-agent" class="dojo-tab" aria-selected="false">
+              08 // PHANTOM AGENT
             </button>
           </div>
         </div>
+
+        
+        <!-- GLOBAL ACOUSTIC DECK, PANIC MUTE, COMPACT MODE & SECRET TRAPDOOR BAR -->
+        <section id="eyrie-global-soundboard" class="eyrie-deck" role="region" aria-label="Eyrie Acoustic Soundboard, Panic Mute and Companion Controls">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 min-w-0">
+              <span class="text-xs font-mono font-extrabold tracking-wider" style="color: var(--aura-bright)">
+                ◈ EYRIE ACOUSTIC DECK &amp; MOBILE COMPANION BAR
+              </span>
+              <span id="eyrie-audio-status" class="text-xs font-mono text-[#94a3b8] truncate" aria-live="polite">
+                READY · Voice FX: Goliath Stone Roar · Panic Mute Armed (Alt+M)
+              </span>
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button type="button" class="eyrie-btn eyrie-btn--panic" data-eyrie-act="panic-mute" title="Emergency Panic Mute (Alt+M): silence all audio, loops & voice TTS">
+                🔇 PANIC MUTE
+              </button>
+              <button type="button" class="eyrie-btn" data-eyrie-act="toggle-compact" id="btn-compact-mode">
+                📱 Compact Mode: Off
+              </button>
+              <button type="button" class="eyrie-btn" data-eyrie-act="toggle-calm" id="btn-calm-mode">
+                ⚡ Motion: Full FX
+              </button>
+              <button type="button" class="eyrie-btn eyrie-btn--aura" data-eyrie-act="play-all" id="btn-play-all">
+                ▶ Play All 8 Cues
+              </button>
+              <button type="button" class="eyrie-btn" data-eyrie-act="open-palette" title="Open Command Palette (Ctrl+K)">
+                ⌘ Palette (Ctrl+K)
+              </button>
+              <button type="button" class="eyrie-btn eyrie-btn--trapdoor" data-eyrie-act="open-trapdoor" title="Secret Trapdoor Vault (Code: 0451 or 2400)">
+                🗝 Secret Sanctum
+              </button>
+            </div>
+          </div>
+
+          <details id="eyrie-soundboard-drawer" class="mt-2" open>
+            <summary class="text-xs font-mono font-bold text-[#cbd5e1] cursor-pointer select-none py-1">
+              <span>◈ 8 Gargoyle × Shadow Turtle × Gotham Acoustic Cues, AI Voice Modulator &amp; Continuous Loop</span>
+              <span class="text-[#64748b] ml-2">Progressive Disclosure ▾</span>
+            </summary>
+            <div class="pt-2 space-y-2">
+              <div class="flex flex-wrap gap-1.5" role="group" aria-label="8 Sector Sound Cues">
+                <button type="button" class="eyrie-btn" data-eyrie-sfx="01">01 · Stone Crack &amp; Roar</button>
+                <button type="button" class="eyrie-btn" data-eyrie-sfx="02">02 · Katana &amp; Sewer Echo</button>
+                <button type="button" class="eyrie-btn" data-eyrie-sfx="03">03 · Clocktower Bell</button>
+                <button type="button" class="eyrie-btn" data-eyrie-sfx="04">04 · Batcomputer Sonar</button>
+                <button type="button" class="eyrie-btn" data-eyrie-sfx="05">05 · Cryo Mutagen Surge</button>
+                <button type="button" class="eyrie-btn" data-eyrie-sfx="06">06 · Grimorum Spell Chime</button>
+                <button type="button" class="eyrie-btn" data-eyrie-sfx="07">07 · Grappling Hook Lock</button>
+                <button type="button" class="eyrie-btn" data-eyrie-sfx="08">08 · Phantom Radar Sweep</button>
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                <button type="button" class="eyrie-btn" data-eyrie-act="toggle-loop" id="btn-haunt-loop">
+                  ∞ Continuous Night Watch Loop: Off
+                </button>
+                <button type="button" class="eyrie-btn" data-eyrie-act="cycle-voice" id="btn-voice-fx">
+                  🎙 AI Voice FX: Goliath Stone Roar
+                </button>
+                <button type="button" class="eyrie-btn" data-eyrie-act="toggle-drone" id="btn-eyrie-drone">
+                  Cavern Sub-Bass Drone: Off
+                </button>
+                <button type="button" class="eyrie-btn eyrie-btn--panic" data-eyrie-act="red-sky-alert">
+                  ⚡ Red-Sky Rooftop Alert
+                </button>
+              </div>
+            </div>
+          </details>
+        </section>
 
         <!-- Stacked Tab Panels (NO padding/border/bg on [role="tabpanel"] itself) -->
         <div class="panel-stack">
@@ -883,6 +1145,8 @@ body { background-color: #05070c; color: #f1f5f9; }
                     class="w-full min-h-[40px] px-3 py-2 rounded-lg text-xs font-mono bg-[#05070c] border border-[rgba(148,163,184,0.28)] text-[#f1f5f9]"
                   >
                     <option value="hermes3:8b">hermes3:8b — Fast Everyday Driver (~5 GB VRAM)</option>
+                    <option value="hf.co/Reed/Ornith-1.5-9B-GGUF:Q4_K_M">Ornith-1.5-9B Uncensored Hybrid (262K Context, ~5.6 GB Q4_K_M)</option>
+                    <option value="hf.co/Reed/Ornith-1.5-9B-GGUF:Q8_0">Ornith-1.5-9B Uncensored Hybrid (~9.5 GB Q8_0 Hybrid GPU+RAM)</option>
                     <option value="hf.co/NousResearch/Hermes-4-14B-GGUF">Hermes-4-14B (HF GGUF — Hybrid Reasoning, ~9.5 GB)</option>
                     <option value="hf.co/NousResearch/DeepHermes-3-Llama-3-8B-Preview-GGUF">DeepHermes-3-8B (HF GGUF — Deep Thinking, ~5.5 GB)</option>
                     <option value="nous-hermes2:10.7b">nous-hermes2:10.7b — SOLAR Fine-Tune (~6.5 GB)</option>
@@ -1337,6 +1601,335 @@ body { background-color: #05070c; color: #f1f5f9; }
             </div>
           </div>
 
+          <!-- ======================================================= -->
+          <!-- PANEL 5: VRAM & MUTAGEN CONTAINMENT LAB                 -->
+          <!-- ======================================================= -->
+          <div role="tabpanel" id="panel-vram" aria-labelledby="tab-vram" hidden="until-found">
+            <div class="p-5 sm:p-7 space-y-6">
+              <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                  <div class="text-xs font-mono font-bold tracking-[0.16em] uppercase" style="color: var(--aura-bright)">
+                    SECTOR 05 // DONATELLO × LEXINGTON HARDWARE CONTAINMENT
+                  </div>
+                  <h2 class="text-xl font-extrabold tracking-tight text-white mt-0.5">
+                    VRAM &amp; Quantization Containment Lab
+                  </h2>
+                  <p class="text-xs sm:text-sm text-[#94a3b8] mt-1 max-w-2xl">
+                    Calculate exact GGUF weight footprints, KV-cache overhead, and Flash Attention savings across Hermes 1–4 and Ornith-1.5-9B.
+                  </p>
+                </div>
+                <button type="button" class="eyrie-btn" data-eyrie-sfx="05">◈ SFX 05 · Cryo Mutagen</button>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div class="obsidian-panel rounded-xl p-4 sm:p-5 space-y-4">
+                  <div class="text-xs font-mono font-bold text-white">LIVE GPU BIO-TUBE CONTAINMENT</div>
+                  <div class="grid grid-cols-2 gap-3 items-center">
+                    <div class="vram-tube">
+                      <div id="vram-lab-fill" class="vram-tube__fill" style="height: 68%;"></div>
+                    </div>
+                    <div class="space-y-2 text-xs font-mono">
+                      <div>
+                        <div class="text-[#94a3b8]">EST. VRAM USED</div>
+                        <div id="vram-lab-readout" class="text-lg font-black text-white tabular-nums">5.8 / 8.0 GB</div>
+                      </div>
+                      <div>
+                        <div class="text-[#94a3b8]">FIT VERDICT</div>
+                        <div id="vram-lab-verdict" class="font-bold text-[#34d399]">100% GPU VRAM FIT</div>
+                      </div>
+                      <div>
+                        <div class="text-[#94a3b8]">EST. SPEED</div>
+                        <div id="vram-lab-tps" class="font-bold text-[#fcd34d] tabular-nums">~76 tok/s</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="obsidian-panel rounded-xl p-4 sm:p-5 space-y-3 lg:col-span-2">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
+                    <div>
+                      <label for="vram-lab-gpu" class="block font-bold text-[#e2e8f0] mb-1">GPU VRAM CAPACITY</label>
+                      <select id="vram-lab-gpu" class="w-full min-h-[38px] px-3 py-1.5 rounded-lg bg-[#05070c] border border-[rgba(148,163,184,0.28)] text-white">
+                        <option value="8">8 GB VRAM (RTX 3060 / 4060 / 5060)</option>
+                        <option value="12">12 GB VRAM (RTX 4070 / 3060 12G)</option>
+                        <option value="16">16 GB VRAM (RTX 4080 / A4000)</option>
+                        <option value="24">24 GB VRAM (RTX 3090 / 4090)</option>
+                        <option value="48">48 GB+ Unified / Dual GPU</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label for="vram-lab-params" class="block font-bold text-[#e2e8f0] mb-1">MODEL PARAMETER SIZE</label>
+                      <select id="vram-lab-params" class="w-full min-h-[38px] px-3 py-1.5 rounded-lg bg-[#05070c] border border-[rgba(148,163,184,0.28)] text-white">
+                        <option value="3">Hermes 3 3B (Ultra-Light)</option>
+                        <option value="8" selected>Hermes 3 8B / DeepHermes 8B</option>
+                        <option value="9">Ornith-1.5-9B Uncensored Hybrid</option>
+                        <option value="14">Hermes 4 14B Flagship Mid-Size</option>
+                        <option value="24">DeepHermes 3 24B Mistral</option>
+                        <option value="36">Hermes 4.3-36B (512K Seed)</option>
+                        <option value="70">Hermes 3 / 4 70B Goliath</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label for="vram-lab-quant" class="block font-bold text-[#e2e8f0] mb-1">GGUF QUANTIZATION</label>
+                      <select id="vram-lab-quant" class="w-full min-h-[38px] px-3 py-1.5 rounded-lg bg-[#05070c] border border-[rgba(148,163,184,0.28)] text-white">
+                        <option value="0.55">Q4_K_M (4-Bit Optimal Balance)</option>
+                        <option value="0.68">Q5_K_M (5-Bit High Precision)</option>
+                        <option value="0.82">Q6_K (6-Bit Near-Lossless)</option>
+                        <option value="1.05">Q8_0 (8-Bit Extreme Fidelity)</option>
+                        <option value="2.0">FP16 (16-Bit Raw Weights)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label for="vram-lab-ctx" class="block font-bold text-[#e2e8f0] mb-1">CONTEXT + KV CACHE (Q8_0 FLASH ATTN)</label>
+                      <select id="vram-lab-ctx" class="w-full min-h-[38px] px-3 py-1.5 rounded-lg bg-[#05070c] border border-[rgba(148,163,184,0.28)] text-white">
+                        <option value="0.4">8,192 tokens (~0.4 GB KV)</option>
+                        <option value="0.75" selected>16,384 tokens (~0.75 GB KV)</option>
+                        <option value="1.4">32,768 tokens (~1.4 GB KV)</option>
+                        <option value="3.2">65,536 tokens (~3.2 GB KV)</option>
+                        <option value="6.0">131,072 tokens (~6.0 GB KV)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div id="vram-heatmap-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 text-xs font-mono"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ======================================================= -->
+          <!-- PANEL 6: MODELFILE & PERSONA FORGE (PLASMID STUDIO)     -->
+          <!-- ======================================================= -->
+          <div role="tabpanel" id="panel-forge" aria-labelledby="tab-forge" hidden="until-found">
+            <div class="p-5 sm:p-7 space-y-6">
+              <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                  <div class="text-xs font-mono font-bold tracking-[0.16em] uppercase" style="color: var(--aura-bright)">
+                    SECTOR 06 // GRIMORUM ARCANA × OLLAMA MODELFILE COMPOSER
+                  </div>
+                  <h2 class="text-xl font-extrabold tracking-tight text-white mt-0.5">
+                    Persona &amp; Modelfile Forge
+                  </h2>
+                  <p class="text-xs sm:text-sm text-[#94a3b8] mt-1 max-w-2xl">
+                    Splice Gargoyle, Shadow Turtle, Dark Knight, or Rapture Co-Op personas into a ready-to-run Ollama <code class="font-mono text-[#e2e8f0]">Modelfile</code>.
+                  </p>
+                </div>
+                <button type="button" class="eyrie-btn" data-eyrie-sfx="06">◈ SFX 06 · Grimorum Chime</button>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                <div class="obsidian-panel rounded-xl p-4 sm:p-5 space-y-3 text-xs font-mono">
+                  <div class="font-bold text-white">1. SELECT ARCHETYPE SPLICE PRESET</div>
+                  <div class="flex flex-wrap gap-1.5" id="forge-persona-btns">
+                    <button type="button" class="eyrie-btn is-active" data-forge-persona="goliath">Goliath Sovereign</button>
+                    <button type="button" class="eyrie-btn" data-forge-persona="donnie">Donnie × Lexington Tech</button>
+                    <button type="button" class="eyrie-btn" data-forge-persona="knight">Gotham Detective</button>
+                    <button type="button" class="eyrie-btn" data-forge-persona="ornith">Ornith-1.5 Deep Reasoner</button>
+                    <button type="button" class="eyrie-btn" data-forge-persona="coop">Isaiah × Elon Co-Op Architect</button>
+                  </div>
+                  <div class="grid grid-cols-2 gap-3 pt-1">
+                    <div>
+                      <label for="forge-base-model" class="block text-[#94a3b8] mb-1">FROM BASE WEIGHTS</label>
+                      <select id="forge-base-model" class="w-full min-h-[36px] px-2.5 py-1 rounded bg-[#05070c] border border-[rgba(148,163,184,0.28)] text-white">
+                        <option value="hermes3:8b">hermes3:8b</option>
+                        <option value="hf.co/NousResearch/Hermes-4-14B-GGUF">Hermes-4-14B-GGUF</option>
+                        <option value="hf.co/ Reed/Ornith-1.5-9B-GGUF:Q4_K_M">Ornith-1.5-9B-GGUF:Q4_K_M</option>
+                        <option value="hf.co/NousResearch/DeepHermes-3-Llama-3-8B-Preview-GGUF">DeepHermes-3-8B-GGUF</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label for="forge-temp" class="block text-[#94a3b8] mb-1">TEMPERATURE (<span id="forge-temp-val">0.65</span>)</label>
+                      <input id="forge-temp" type="range" min="0.1" max="1.2" step="0.05" value="0.65" class="w-full accent-[var(--aura)]" />
+                    </div>
+                  </div>
+                  <div>
+                    <label for="forge-sys-prompt" class="block text-[#94a3b8] mb-1">SYSTEM DIRECTIVE</label>
+                    <textarea id="forge-sys-prompt" rows="4" class="w-full p-2.5 rounded bg-[#05070c] border border-[rgba(148,163,184,0.26)] text-white"></textarea>
+                  </div>
+                  <div class="flex flex-wrap gap-2">
+                    <button type="button" id="btn-download-modelfile" class="eyrie-btn eyrie-btn--aura">⬇ Download Modelfile</button>
+                    <button type="button" id="btn-copy-modelfile" class="eyrie-btn">📋 Copy Modelfile &amp; ollama create</button>
+                  </div>
+                </div>
+
+                <div class="ps-terminal rounded-xl p-4 sm:p-5 space-y-2">
+                  <div class="text-xs font-mono font-bold text-[#6ee7b7]">GENERATED OLLAMA MODELFILE PREVIEW</div>
+                  <pre id="forge-output-pre" class="text-xs font-mono text-[#d1fae5] whitespace-pre-wrap overflow-x-auto m-0"></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ======================================================= -->
+          <!-- PANEL 7: CLOCKTOWER VAULT & DEVELOPER SAVE ROOM         -->
+          <!-- ======================================================= -->
+          <div role="tabpanel" id="panel-vault" aria-labelledby="tab-vault" hidden="until-found">
+            <div class="p-5 sm:p-7 space-y-6">
+              <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                  <div class="text-xs font-mono font-bold tracking-[0.16em] uppercase" style="color: var(--aura-bright)">
+                    SECTOR 07 // PERSISTENT SAVE SLOTS &amp; DEVELOPER MICRO-TOOLS
+                  </div>
+                  <h2 class="text-xl font-extrabold tracking-tight text-white mt-0.5">
+                    Clocktower Vault &amp; Save Room
+                  </h2>
+                  <p class="text-xs sm:text-sm text-[#94a3b8] mt-1 max-w-2xl">
+                    Save Elon's favorite prompts, PowerShell snippets, and configurations locally with tamper-evident SHA-256 JSON export, plus instant Base64 / JSON / Hash tools.
+                  </p>
+                </div>
+                <button type="button" class="eyrie-btn" data-eyrie-sfx="07">◈ SFX 07 · Vault Deadbolt</button>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                <div class="obsidian-panel rounded-xl p-4 sm:p-5 space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-mono font-bold text-white">CLOCKTOWER SAVE SLOTS (PERSISTENT)</span>
+                    <button type="button" id="vault-export-btn" class="eyrie-btn">⬇ Export Vault JSON</button>
+                  </div>
+                  <form id="vault-save-form" class="space-y-2 text-xs font-mono">
+                    <input id="vault-title-in" type="text" placeholder="Save slot title (e.g. Elon's Hermes 4 Rig Config)" class="w-full min-h-[34px] px-2.5 py-1 rounded bg-[#05070c] border border-[rgba(148,163,184,0.26)] text-white" required />
+                    <textarea id="vault-body-in" rows="3" placeholder="Prompt, PowerShell command, or secret note to lock into the Clocktower Vault..." class="w-full p-2.5 rounded bg-[#05070c] border border-[rgba(148,163,184,0.26)] text-white" required></textarea>
+                    <button type="submit" class="eyrie-btn eyrie-btn--aura">💾 Lock Into Clocktower Vault</button>
+                  </form>
+                  <div id="vault-list" class="space-y-2 max-h-[260px] overflow-y-auto pt-2"></div>
+                </div>
+
+                <div class="obsidian-panel rounded-xl p-4 sm:p-5 space-y-3 text-xs font-mono">
+                  <div class="font-bold text-white">UTILITY-BELT DEVELOPER MICRO-TOOLS (JSON / BASE64 / SHA-256)</div>
+                  <textarea id="micro-tool-in" rows="4" class="w-full p-2.5 rounded bg-[#05070c] border border-[rgba(148,163,184,0.26)] text-white" placeholder="Paste JSON, Base64, or text to inspect...">{ "sanctuary": "Eyrie Citadel", "operator": "Elon", "ally": "Isaiah", "model": "Hermes-4-14B" }</textarea>
+                  <div class="flex flex-wrap gap-1.5">
+                    <button type="button" class="eyrie-btn" data-micro="json-fmt">Format JSON</button>
+                    <button type="button" class="eyrie-btn" data-micro="b64-enc">Base64 Encode</button>
+                    <button type="button" class="eyrie-btn" data-micro="b64-dec">Base64 Decode</button>
+                    <button type="button" class="eyrie-btn" data-micro="sha256">Compute SHA-256</button>
+                  </div>
+                  <pre id="micro-tool-out" class="p-3 rounded bg-[#040806] border border-[rgba(16,185,129,0.28)] text-[#6ee7b7] whitespace-pre-wrap overflow-x-auto m-0 min-h-[76px]">Ready.</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ======================================================= -->
+          <!-- PANEL 8: PHANTOM AGENT STAGE & 128-D VECTOR SEARCH      -->
+          <!-- ======================================================= -->
+          <div role="tabpanel" id="panel-agent" aria-labelledby="tab-agent" hidden="until-found">
+            <div class="p-5 sm:p-7 space-y-6">
+              <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                  <div class="text-xs font-mono font-bold tracking-[0.16em] uppercase" style="color: var(--aura-bright)">
+                    SECTOR 08 // AUTONOMOUS FAILOVER AGENT, 128-D VECTOR SEARCH &amp; LIVE RIGHT CANVAS
+                  </div>
+                  <h2 class="text-xl font-extrabold tracking-tight text-white mt-0.5">
+                    Phantom Agent Stage — Hermes × Ornith × Gemini Takeover
+                  </h2>
+                  <p class="text-xs sm:text-sm text-[#94a3b8] mt-1 max-w-2xl">
+                    Command the autonomous agent on the left while watching the glowing cursor move, click controls, run 128-D semantic vector searches, and inspect the 5×5 multi-model matrix on the right.
+                  </p>
+                </div>
+                <button type="button" class="eyrie-btn" data-eyrie-sfx="08">◈ SFX 08 · Phantom Radar</button>
+              </div>
+
+              <div class="agent-split">
+                <!-- Left Mission Orchestrator -->
+                <div class="obsidian-panel rounded-xl p-4 sm:p-5 space-y-3.5 text-xs font-mono">
+                  <div class="flex items-center justify-between">
+                    <span class="font-bold text-white">1-TAP AUTONOMOUS AGENT MISSIONS</span>
+                    <span id="agent-status-pill" class="px-2.5 py-0.5 rounded-full bg-[#05070c] border border-[rgba(16,185,129,0.45)] text-[#6ee7b7]">FAILOVER ARMED</span>
+                  </div>
+                  <div class="flex flex-wrap gap-1.5">
+                    <button type="button" class="eyrie-btn eyrie-btn--aura" data-agent-mission="tour">▶ Auto-Pilot UI Click Tour</button>
+                    <button type="button" class="eyrie-btn" data-agent-mission="vector">🧬 128-D Vector Search</button>
+                    <button type="button" class="eyrie-btn" data-agent-mission="matrix">🧠 5×5 Team Upgrade Matrix</button>
+                    <button type="button" class="eyrie-btn eyrie-btn--trapdoor" data-agent-mission="trapdoor">🗝 Unlock Secret Trapdoor</button>
+                  </div>
+                  <div id="agent-feed" class="p-3 rounded-lg bg-[#05070c] border border-[rgba(148,163,184,0.2)] space-y-2 max-h-[210px] overflow-y-auto text-[#cbd5e1]">
+                    <div><strong class="text-white">[PHANTOM AGENT // EYRIE-BIO-MATRIX]</strong> Select any mission above or enter a custom goal below to watch the autonomous cursor operate the right-hand canvas.</div>
+                  </div>
+                  <form id="agent-goal-form" class="flex gap-2">
+                    <input id="agent-goal-input" type="text" placeholder="Tell Phantom Agent what to click or vector-search..." class="w-full min-h-[36px] px-2.5 py-1 rounded bg-[#05070c] border border-[rgba(148,163,184,0.28)] text-white" />
+                    <button type="submit" class="eyrie-btn eyrie-btn--aura shrink-0">▶ Execute</button>
+                  </form>
+                </div>
+
+                <!-- Right Interactive Canvas with Moving Cursor -->
+                <div class="obsidian-panel rounded-xl p-4 sm:p-5 space-y-3 text-xs font-mono">
+                  <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[rgba(148,163,184,0.16)] pb-2.5">
+                    <div class="flex flex-wrap gap-1.5">
+                      <button type="button" class="eyrie-btn is-active" data-canvas-view="stage">🌐 Live Stage</button>
+                      <button type="button" class="eyrie-btn" data-canvas-view="vector">🧬 128-D Vector Search</button>
+                      <button type="button" class="eyrie-btn" data-canvas-view="team">🧠 5×5 Team Matrix</button>
+                    </div>
+                    <span id="agent-cursor-coords" class="text-[#6ee7b7]">CURSOR · READY</span>
+                  </div>
+
+                  <div id="agent-stage-box" class="agent-stage-viewport">
+                    <!-- Glowing Autonomous Agent Cursor -->
+                    <div id="agent-cursor" class="agent-cursor" aria-hidden="true">
+                      <div class="agent-cursor__ring"></div>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--aura)" stroke="#ffffff" stroke-width="2">
+                        <path d="M4 3l16 7-7 2-2 7-7-16z" />
+                      </svg>
+                    </div>
+
+                    <!-- View 1: Live Stage -->
+                    <div data-canvas-pane="stage" class="space-y-3">
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="obsidian-card rounded-xl p-3.5 space-y-2" data-cursor-target="rig-node">
+                          <div class="text-[#94a3b8]">ACTIVE EYRIE RIG</div>
+                          <div id="stage-rig-readout" class="text-sm font-bold text-white">Hermes 3 / 4 + Ornith-1.5-9B Ready</div>
+                          <button type="button" class="eyrie-btn" data-stage-click="test-sfx" data-cursor-target="btn-stage-sfx">◈ Trigger Gargoyle Roar</button>
+                        </div>
+                        <div class="obsidian-card rounded-xl p-3.5 space-y-2" data-cursor-target="bridge-node">
+                          <div class="text-[#94a3b8]">3-TIER FAILOVER BRIDGE</div>
+                          <div id="stage-bridge-readout" class="text-sm font-bold text-[#34d399]">Local Ollama ⇄ Cloud Gemini ⇄ Sim</div>
+                          <button type="button" class="eyrie-btn" data-stage-click="test-vector" data-cursor-target="btn-stage-vec">🧬 Run Semantic Query</button>
+                        </div>
+                      </div>
+                      <div class="obsidian-card rounded-xl p-3.5 space-y-1.5" data-cursor-target="log-node">
+                        <div class="text-[#94a3b8]">AUTONOMOUS RIGHT-SCREEN ACTION LOG</div>
+                        <div id="stage-action-log" class="text-[#d1fae5] space-y-1 max-h-[140px] overflow-y-auto">
+                          <div>[READY] Right-hand interactive canvas online.</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- View 2: 128-D Semantic Vector Search -->
+                    <div data-canvas-pane="vector" hidden class="space-y-3">
+                      <form id="vector-search-form" class="flex gap-2">
+                        <input id="vector-search-in" type="text" value="ornith uncensored hybrid reasoning vram trapdoor" class="w-full min-h-[34px] px-2.5 py-1 rounded bg-[#05070c] border border-[rgba(148,163,184,0.28)] text-white" />
+                        <button type="submit" class="eyrie-btn eyrie-btn--aura shrink-0">Search 128-D</button>
+                      </form>
+                      <div id="vector-results" class="space-y-2 max-h-[250px] overflow-y-auto"></div>
+                    </div>
+
+                    <!-- View 3: 5x5 Multi-Model Team Matrix -->
+                    <div data-canvas-pane="team" hidden class="space-y-2.5 max-h-[290px] overflow-y-auto">
+                      <div class="obsidian-card rounded-lg p-3">
+                        <div class="font-bold text-[#c4b5fd]">1. Antigravity // Lead Orchestrator</div>
+                        <p class="text-[#94a3b8] mt-1">Persistent daemon guard, pre-flight quota routing, atomic batch builds, PWA cache sync, and dual desktop/mobile verification.</p>
+                      </div>
+                      <div class="obsidian-card rounded-lg p-3">
+                        <div class="font-bold text-[#6ee7b7]">2. Nous Hermes 3 &amp; Hermes 4 (Local Ollama Engine)</div>
+                        <p class="text-[#94a3b8] mt-1">Flash Attention + Q8_0 KV cache lock, 24h VRAM keep-alive, strict JSON tool schemas, and PowerShell 7 automation.</p>
+                      </div>
+                      <div class="obsidian-card rounded-lg p-3">
+                        <div class="font-bold text-[#fcd34d]">3. Ornith-1.5-9B (Uncensored Hybrid Gated DeltaNet · 262K)</div>
+                        <p class="text-[#94a3b8] mt-1">3:1 linear attention for 262K context, &lt;think&gt; reasoning trace separation, direct GGUF execution, and 128-D vector pre-filtering.</p>
+                      </div>
+                      <div class="obsidian-card rounded-lg p-3">
+                        <div class="font-bold text-[#7dd3fc]">4. Gemini 3.5 Flash-Lite (Cloud Neural Bridge &amp; Voice)</div>
+                        <p class="text-[#94a3b8] mt-1">Sub-500ms cloud failover cascade, local encrypted API key vault, and cavern reverb neural voice modulation.</p>
+                      </div>
+                      <div class="obsidian-card rounded-lg p-3">
+                        <div class="font-bold text-[#fca5a5]">5. Opus Workbench &amp; Secret Sanctum Bridge</div>
+                        <p class="text-[#94a3b8] mt-1">Progressive disclosure, 1-tap Alt+M Panic Mute, Simplified Companion Mode, and Isaiah × Elon Secret Trapdoor Co-Op Vault.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </main>
 
@@ -1413,6 +2006,136 @@ body { background-color: #05070c; color: #f1f5f9; }
             04 // Gothic Clocktower Token Sanctuary — Holographic Emerald Prisms
           </figcaption>
         </figure>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Native Modal Dialog: Ctrl+K Global Operator Command Palette -->
+  <dialog id="eyrie-palette-dialog" class="art-lightbox" aria-labelledby="palette-title">
+    <div class="p-4 sm:p-5 space-y-3 w-[min(640px,calc(100vw-2rem))] text-xs font-mono">
+      <div class="flex items-center justify-between gap-2 border-b border-[rgba(148,163,184,0.18)] pb-2.5">
+        <h1 id="palette-title" class="text-sm font-extrabold text-white">⌘ EYRIE COMMAND PALETTE (CTRL+K)</h1>
+        <button type="button" id="close-palette-btn" class="eyrie-btn">Esc · Close</button>
+      </div>
+      <input id="palette-search-in" type="search" placeholder="Filter commands, sectors, horror/gargoyle cues, or type '0451' / 'trapdoor'..." class="w-full min-h-[38px] px-3 py-1.5 rounded-lg bg-[#05070c] border border-[rgba(148,163,184,0.3)] text-white" autofocus />
+      <div id="palette-cmd-list" class="space-y-1.5 max-h-[320px] overflow-y-auto"></div>
+    </div>
+  </dialog>
+
+  <!-- Native Modal Dialog: SECRET TRAPDOOR — ISAIAH × ELON BLACK-SITE CO-OP SANCTUM -->
+  <dialog id="secret-trapdoor-dialog" class="trapdoor-dialog" aria-labelledby="trapdoor-title">
+    <div class="p-5 sm:p-7 space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[rgba(251,191,36,0.28)] pb-4">
+        <div>
+          <div class="text-xs font-mono font-bold tracking-[0.2em] uppercase text-[#fbbf24]">
+            🗝 CLASSIFIED TRAPDOOR VAULT // EYES ONLY: ISAIAH (LITTLE BILL #11) &amp; ELON (SHAWN #12)
+          </div>
+          <h1 id="trapdoor-title" class="text-xl sm:text-2xl font-black text-white mt-0.5">
+            EYRIE × RAPTURE // BLACK-SITE CO-OP SANCTUM
+          </h1>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="trapdoor-lock-badge" class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#1c1408] border border-[#fbbf24] text-[#fde68a]">
+            LOCKED · ENTER CODE
+          </span>
+          <button type="button" id="close-trapdoor-btn" class="eyrie-btn">Close Trapdoor</button>
+        </div>
+      </div>
+
+      <!-- STEP 1: SECRET KEYPAD GATE (Codes: 0451, 2400, 1112, or EYRIE) -->
+      <div id="trapdoor-gate-view" class="obsidian-panel rounded-2xl p-5 sm:p-6 space-y-4 text-center max-w-lg mx-auto">
+        <div class="text-xs font-mono font-bold tracking-wider text-[#fcd34d]">
+          ENTER DUAL-FOUNDER ACCESS CODE TO UNLOCK HIDDEN APP
+        </div>
+        <p class="text-xs text-[#94a3b8]">
+          Shared secret codes for Isaiah &amp; Elon: <code class="text-[#6ee7b7] font-bold">0451</code> (Rapture Bathysphere), <code class="text-[#c4b5fd] font-bold">2400</code> (B.A.D Founders), or <code class="text-[#fcd34d] font-bold">1112</code> (#11 × #12).
+        </p>
+        <div id="trapdoor-pin-display" class="text-2xl font-mono font-black tracking-[0.35em] py-2.5 px-4 rounded-xl bg-[#04070d] border border-[rgba(251,191,36,0.4)] text-[#fde68a] min-h-[48px]">
+          ••••
+        </div>
+        <div class="keypad-grid" role="group" aria-label="Secret Trapdoor Keypad">
+          <button type="button" class="keypad-btn" data-key="1">1</button>
+          <button type="button" class="keypad-btn" data-key="2">2</button>
+          <button type="button" class="keypad-btn" data-key="3">3</button>
+          <button type="button" class="keypad-btn" data-key="4">4</button>
+          <button type="button" class="keypad-btn" data-key="5">5</button>
+          <button type="button" class="keypad-btn" data-key="6">6</button>
+          <button type="button" class="keypad-btn" data-key="7">7</button>
+          <button type="button" class="keypad-btn" data-key="8">8</button>
+          <button type="button" class="keypad-btn" data-key="9">9</button>
+          <button type="button" class="keypad-btn" data-key="CLR">CLR</button>
+          <button type="button" class="keypad-btn" data-key="0">0</button>
+          <button type="button" class="keypad-btn" data-key="GO">UNLOCK</button>
+        </div>
+        <div class="flex flex-wrap justify-center gap-2 pt-2">
+          <button type="button" class="eyrie-btn eyrie-btn--trapdoor" data-quick-unlock="0451">⚡ Instant Founder Unlock (0451)</button>
+          <button type="button" class="eyrie-btn" data-quick-unlock="2400">★ B.A.D 2400 Unlock</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: UNLOCKED HIDDEN CO-OP APP (ISAIAH × ELON EXCLUSIVE) -->
+      <div id="trapdoor-sanctum-view" hidden class="space-y-5">
+        <!-- Twin Founder Cards & Instant Crossover Theme Morph -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+          <div class="obsidian-card rounded-xl p-4 border border-[rgba(16,185,129,0.45)] space-y-1.5">
+            <div class="text-[#6ee7b7] font-bold">FOUNDER 01 // RAPTURE BIO-MATRIX</div>
+            <div class="text-base font-black text-white">ISAIAH aka LITTLE BILL #11</div>
+            <div class="text-[#94a3b8]">Alienware 16X Aurora · RTX 5060 Blackwell · Galaxy Z Fold 8 · BioShock × Matrix × Umbrella</div>
+          </div>
+          <div class="obsidian-card rounded-xl p-4 border border-[rgba(167,139,250,0.45)] space-y-1.5">
+            <div class="text-[#c4b5fd] font-bold">FOUNDER 02 // EYRIE CITADEL</div>
+            <div class="text-base font-black text-white">SHAWN aka ELON! #12</div>
+            <div class="text-[#94a3b8]">Eyrie Rooftop Command · Hermes 1–4 &amp; Ornith-1.5-9B · Gargoyles × Shadow Turtles × Dark Knight</div>
+          </div>
+          <div class="obsidian-card rounded-xl p-4 border border-[rgba(251,191,36,0.45)] space-y-2">
+            <div class="text-[#fde68a] font-bold">LIVE APP SKIN &amp; CROSSOVER SWITCHER</div>
+            <div class="flex flex-wrap gap-1.5">
+              <button type="button" class="eyrie-btn eyrie-btn--trapdoor" data-crossover-skin="fusion">⚡ Dual-Founder Fusion</button>
+              <button type="button" class="eyrie-btn" data-crossover-skin="rapture">☣ Rapture Bio-Matrix</button>
+              <button type="button" class="eyrie-btn" data-crossover-skin="eyrie">🦇 Eyrie Goliath</button>
+            </div>
+            <a href="https://drive.google.com/file/d/1DQhYMcxwNQRMpuKyZvClRW3BzRjM-Vgn/view?usp=drivesdk" target="_blank" rel="noopener noreferrer" class="inline-block underline text-[#6ee7b7] pt-1">
+              Open Isaiah's Rapture Monolith on Drive &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- Co-Op Dual-Founder AI Command Console & Encrypted Dead-Drop Vault -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 text-xs font-mono">
+          <!-- Co-Op AI War Room -->
+          <div class="ps-terminal rounded-xl p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-[#fde68a]">⚡ CO-OP DUAL-BRAIN WAR ROOM (HERMES 4 × ORNITH-1.5 × GEMINI)</span>
+              <select id="coop-operator-select" class="px-2 py-1 rounded bg-[#05070c] border border-[rgba(251,191,36,0.4)] text-[#fde68a]">
+                <option value="Isaiah (#11)">Speaking as: Isaiah (#11)</option>
+                <option value="Elon (#12)">Speaking as: Elon (#12)</option>
+              </select>
+            </div>
+            <div id="coop-chat-log" class="p-3 rounded-lg bg-[#030609] border border-[rgba(16,185,129,0.24)] space-y-2 max-h-[220px] overflow-y-auto text-[#d1fae5]">
+              <div><strong class="text-[#fde68a]">[BLACK-SITE SANCTUM AI]</strong> Trapdoor unlocked. Welcome, Isaiah (#11) and Elon (#12). Both Eyrie Citadel and Rapture Bio-Matrix telemetry are linked. Ask for co-op PowerShell scripts, Ornith-1.5-9B uncensored configs, or B.A.D 2400 squad strategies!</div>
+            </div>
+            <form id="coop-chat-form" class="flex gap-2">
+              <input id="coop-chat-in" type="text" placeholder="Send a secret co-op prompt to Hermes / Ornith / Gemini..." class="w-full min-h-[36px] px-2.5 py-1 rounded bg-[#05070c] border border-[rgba(251,191,36,0.35)] text-white" />
+              <button type="submit" class="eyrie-btn eyrie-btn--trapdoor shrink-0">Send</button>
+            </form>
+          </div>
+
+          <!-- Shared Encrypted Dead-Drop & Sync Packet Exchange -->
+          <div class="obsidian-panel rounded-xl p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-[#c4b5fd]">🔐 ISAIAH ⇄ ELON DEAD-DROP &amp; SYNC PACKET VAULT</span>
+              <button type="button" id="coop-copy-packet" class="eyrie-btn">📋 Copy Encrypted Sync Code</button>
+            </div>
+            <form id="coop-drop-form" class="space-y-2">
+              <input id="coop-drop-note" type="text" placeholder="Write a private dead-drop message, prompt, or rig code for Elon / Isaiah..." class="w-full min-h-[36px] px-2.5 py-1 rounded bg-[#05070c] border border-[rgba(148,163,184,0.28)] text-white" required />
+              <div class="flex flex-wrap gap-2">
+                <button type="submit" class="eyrie-btn eyrie-btn--aura">➕ Post to Shared Dead-Drop</button>
+                <button type="button" id="coop-import-packet" class="eyrie-btn">📥 Import Friend's Sync Code</button>
+              </div>
+            </form>
+            <div id="coop-drop-list" class="space-y-2 max-h-[180px] overflow-y-auto pt-1"></div>
+          </div>
+        </div>
       </div>
     </div>
   </dialog>
@@ -2063,6 +2786,20 @@ body { background-color: #05070c; color: #f1f5f9; }
       const hermesClan = [
         {
           gen: 'h4',
+          name: 'Ornith-1.5-9B Uncensored (262K Hybrid Gated DeltaNet)',
+          duo: 'GOLIATH × DARK KNIGHT · 262K UNCENSORED ARCHITECT',
+          badgeColor: '#fcd34d',
+          context: '262K Context',
+          contextPct: 75,
+          vram: '5.6 GB (Q4_K_M) / 9.5 GB (Q8_0)',
+          weights: 'Qwen 3.5 Hybrid Gated DeltaNet Uncensored',
+          summary: 'Punches 3–4× above its weight class in coding, terminal debugging, and deep separated <think> reasoning without cloud refusal filters.',
+          variants: ['Ornith-1.5-9B-Q4_K_M (5.6 GB Pure VRAM)', 'Ornith-1.5-9B-Q8_0 (9.5 GB Hybrid)'],
+          psValue: 'hf.co/Reed/Ornith-1.5-9B-GGUF:Q4_K_M',
+          psLabel: 'Load Ornith-1.5-9B'
+        },
+        {
+          gen: 'h4',
           name: 'Hermes 4 Series (405B / 70B / 14B)',
           duo: 'GOLIATH × LEONARDO · APEX SOVEREIGNS',
           badgeColor: '#a78bfa',
@@ -2471,6 +3208,7 @@ body { background-color: #05070c; color: #f1f5f9; }
         if (!q) return;
         simInput.value = '';
         const low = q.toLowerCase();
+        if (low === '0451' || low === '2400' || low === '1112' || low.includes('trapdoor') || low.includes('sanctum')) { openTrapdoorDialog(true); return streamReply(q, '[CLASSIFIED TRAPDOOR UNLOCKED] Opening Isaiah (#11) × Elon (#12) Black-Site Co-Op Sanctum...'); }
         if (low.includes('list')) return streamReply(q, getSimScript('list').reply);
         if (low.includes('awaken')) return streamReply(q, getSimScript('awaken').reply);
         if (low.includes('info')) return streamReply(q, getSimScript('info').reply);
@@ -2485,6 +3223,865 @@ body { background-color: #05070c; color: #f1f5f9; }
       // Initialize shared VRAM tier + dry-run welcome message
       setVramTier('8', false);
       simOutput.textContent = 'PS C:\\Users\\Elon\\EyrieSanctuary> # Cavern Dry-Run ready. Click "awaken-hermes" or any command above to preview live local streaming.';
+
+      /* ===========================================================
+         10. V3.6 PROCEDURAL WEB AUDIO SYNTH, 8 SECTORS & TRAPDOOR
+         =========================================================== */
+      const VOICE_MODES = [
+        { id: 'goliath', label: 'Goliath Stone Roar', rate: 0.84, pitch: 0.68 },
+        { id: 'donnie', label: 'Donnie × Lexington Cyber', rate: 1.06, pitch: 1.12 },
+        { id: 'knight', label: 'Gotham Vigilante', rate: 0.88, pitch: 0.74 },
+        { id: 'rapture', label: 'Rapture Bathysphere', rate: 0.92, pitch: 0.82 },
+        { id: 'clean', label: 'Studio Natural Voice', rate: 1.0, pitch: 1.0 }
+      ];
+      let voiceModeIdx = 0;
+      let audioCtx = null;
+      let masterGain = null;
+      let droneOsc = null;
+      let droneGain = null;
+      let loopTimer = null;
+      let seqTimer = null;
+      let calmMotion = false;
+      let compactMode = window.innerWidth <= 680;
+
+      function ensureAudio() {
+        if (!audioCtx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) return null;
+          audioCtx = new AC();
+          masterGain = audioCtx.createGain();
+          masterGain.gain.value = 0.55;
+          masterGain.connect(audioCtx.destination);
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+        return audioCtx;
+      }
+
+      const CUE_NAMES = {
+        '01': '01 // Goliath Stone Crack & Rooftop Roar',
+        '02': '02 // Shadow Katana Slash & Sewer Matrix Echo',
+        '03': '03 // Clocktower Bell & Emerald Prism Chime',
+        '04': '04 // Batcomputer Sonar & Cavern Turbine',
+        '05': '05 // Cryo Mutagen Tube Surge & Boil',
+        '06': '06 // Grimorum Arcana Spell Resonance',
+        '07': '07 // Clocktower Iron Vault Deadbolt',
+        '08': '08 // Phantom Agent Radar & Vector Lock'
+      };
+
+      function updateAudioStatus(text) {
+        const el = document.getElementById('eyrie-audio-status');
+        if (el) el.textContent = text;
+      }
+
+      function triggerVisualPulse() {
+        if (calmMotion) return;
+        let layer = document.getElementById('eyrie-fx-overlay');
+        if (!layer) {
+          layer = document.createElement('div');
+          layer.id = 'eyrie-fx-overlay';
+          layer.className = 'eyrie-fx-overlay';
+          layer.innerHTML = '<div class="eyrie-fx-overlay__vignette"></div>';
+          document.body.appendChild(layer);
+        }
+        layer.classList.add('is-active');
+        clearTimeout(layer._t);
+        layer._t = setTimeout(() => layer.classList.remove('is-active'), 900);
+      }
+
+      function playEyrieCue(code) {
+        const ac = ensureAudio();
+        if (!ac || !masterGain) return;
+        const now = ac.currentTime;
+        const baseFreqs = { '01': 72, '02': 440, '03': 528, '04': 1180, '05': 140, '06': 660, '07': 95, '08': 880 };
+        const f = baseFreqs[code] || 220;
+
+        const osc1 = ac.createOscillator();
+        const osc2 = ac.createOscillator();
+        const g = ac.createGain();
+        osc1.type = code === '01' || code === '07' ? 'sawtooth' : 'triangle';
+        osc2.type = 'sine';
+        osc1.frequency.setValueAtTime(f, now);
+        osc1.frequency.exponentialRampToValueAtTime(Math.max(38, f * 0.55), now + 0.95);
+        osc2.frequency.setValueAtTime(f * 1.5, now);
+        osc2.frequency.exponentialRampToValueAtTime(f * 0.75, now + 0.95);
+
+        g.gain.setValueAtTime(0.001, now);
+        g.gain.linearRampToValueAtTime(0.32, now + 0.04);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 1.05);
+
+        osc1.connect(g);
+        osc2.connect(g);
+        g.connect(masterGain);
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 1.08);
+        osc2.stop(now + 1.08);
+
+        triggerVisualPulse();
+        updateAudioStatus('NOW PLAYING · ' + (CUE_NAMES[code] || code));
+      }
+
+      function panicMuteAll() {
+        if (seqTimer) { clearInterval(seqTimer); seqTimer = null; }
+        if (loopTimer) { clearInterval(loopTimer); loopTimer = null; }
+        if (droneOsc) {
+          try { droneOsc.stop(); droneOsc.disconnect(); } catch {}
+          droneOsc = null;
+        }
+        if (window.speechSynthesis) {
+          try { window.speechSynthesis.cancel(); } catch {}
+        }
+        const btnAll = document.getElementById('btn-play-all');
+        if (btnAll) btnAll.textContent = '▶ Play All 8 Cues';
+        const btnLoop = document.getElementById('btn-haunt-loop');
+        if (btnLoop) btnLoop.textContent = '∞ Continuous Night Watch Loop: Off';
+        const btnDrone = document.getElementById('btn-eyrie-drone');
+        if (btnDrone) btnDrone.textContent = 'Cavern Sub-Bass Drone: Off';
+        updateAudioStatus('🔇 PANIC MUTED · All audio, loops, drones & voice TTS silenced immediately');
+      }
+
+      function speakWithModulator(text) {
+        if (!('speechSynthesis' in window)) return;
+        try {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(text);
+          const vm = VOICE_MODES[voiceModeIdx] || VOICE_MODES[0];
+          u.rate = vm.rate;
+          u.pitch = vm.pitch;
+          window.speechSynthesis.speak(u);
+        } catch {}
+      }
+
+      function applyCompactMode(on) {
+        compactMode = Boolean(on);
+        document.documentElement.setAttribute('data-compact', String(compactMode));
+        const drawer = document.getElementById('eyrie-soundboard-drawer');
+        if (drawer) drawer.open = !compactMode;
+        const btn = document.getElementById('btn-compact-mode');
+        if (btn) btn.textContent = compactMode ? '📱 Compact Mode: On' : '🖥 Compact Mode: Off';
+      }
+      applyCompactMode(compactMode);
+
+      function applyCalmMode(on) {
+        calmMotion = Boolean(on);
+        document.documentElement.setAttribute('data-reduced-motion', String(calmMotion));
+        const btn = document.getElementById('btn-calm-mode');
+        if (btn) btn.textContent = calmMotion ? '🛡 Motion: Calm' : '⚡ Motion: Full FX';
+      }
+
+      document.addEventListener('click', (e) => {
+        const sfxBtn = e.target.closest('[data-eyrie-sfx]');
+        if (sfxBtn) {
+          playEyrieCue(sfxBtn.getAttribute('data-eyrie-sfx'));
+          return;
+        }
+        const actBtn = e.target.closest('[data-eyrie-act]');
+        if (!actBtn) return;
+        const act = actBtn.getAttribute('data-eyrie-act');
+        if (act === 'panic-mute') {
+          panicMuteAll();
+        } else if (act === 'toggle-compact') {
+          applyCompactMode(!compactMode);
+        } else if (act === 'toggle-calm') {
+          applyCalmMode(!calmMotion);
+        } else if (act === 'play-all') {
+          if (seqTimer) {
+            clearInterval(seqTimer);
+            seqTimer = null;
+            actBtn.textContent = '▶ Play All 8 Cues';
+            updateAudioStatus('Sequence stopped.');
+          } else {
+            const codes = ['01', '02', '03', '04', '05', '06', '07', '08'];
+            let i = 0;
+            actBtn.textContent = '■ Stop Sequence';
+            playEyrieCue(codes[i++]);
+            seqTimer = setInterval(() => {
+              if (i >= codes.length) {
+                clearInterval(seqTimer);
+                seqTimer = null;
+                actBtn.textContent = '▶ Play All 8 Cues';
+                return;
+              }
+              playEyrieCue(codes[i++]);
+            }, 1150);
+          }
+        } else if (act === 'toggle-loop') {
+          if (loopTimer) {
+            clearInterval(loopTimer);
+            loopTimer = null;
+            actBtn.textContent = '∞ Continuous Night Watch Loop: Off';
+            updateAudioStatus('Continuous Night Watch Loop stopped.');
+          } else {
+            const codes = ['01', '02', '03', '04', '05', '06', '07', '08'];
+            let i = 0;
+            actBtn.textContent = '∞ Continuous Night Watch Loop: On';
+            playEyrieCue('01');
+            loopTimer = setInterval(() => {
+              i = (i + 1) % codes.length;
+              playEyrieCue(codes[i]);
+            }, 3400);
+          }
+        } else if (act === 'cycle-voice') {
+          voiceModeIdx = (voiceModeIdx + 1) % VOICE_MODES.length;
+          const vm = VOICE_MODES[voiceModeIdx];
+          actBtn.textContent = '🎙 AI Voice FX: ' + vm.label;
+          updateAudioStatus('AI Voice Modulator switched to ' + vm.label);
+        } else if (act === 'toggle-drone') {
+          const ac = ensureAudio();
+          if (!ac || !masterGain) return;
+          if (droneOsc) {
+            try { droneOsc.stop(); droneOsc.disconnect(); } catch {}
+            droneOsc = null;
+            actBtn.textContent = 'Cavern Sub-Bass Drone: Off';
+            updateAudioStatus('Cavern Sub-Bass Drone silenced.');
+          } else {
+            droneOsc = ac.createOscillator();
+            droneGain = ac.createGain();
+            droneOsc.type = 'sawtooth';
+            droneOsc.frequency.value = 38.5;
+            droneGain.gain.value = 0.08;
+            droneOsc.connect(droneGain);
+            droneGain.connect(masterGain);
+            droneOsc.start();
+            actBtn.textContent = 'Cavern Sub-Bass Drone: On';
+            updateAudioStatus('38.5 Hz Eyrie Cavern Sub-Bass Drone active.');
+          }
+        } else if (act === 'red-sky-alert') {
+          const raphBtn = document.querySelector('[data-set-clan="raph"]');
+          if (raphBtn) raphBtn.click();
+          playEyrieCue('01');
+          updateAudioStatus('⚡ RED-SKY ROOFTOP ALERT · Blood-Moon Raph & Goliath Breach Mode active!');
+        } else if (act === 'open-palette') {
+          openPaletteDialog();
+        } else if (act === 'open-trapdoor') {
+          openTrapdoorDialog(false);
+        }
+      });
+
+      /* ===========================================================
+         11. SECTOR 05: VRAM CONTAINMENT LAB & QUANTIZATION HEATMAP
+         =========================================================== */
+      const vramGpuEl = document.getElementById('vram-lab-gpu');
+      const vramParamsEl = document.getElementById('vram-lab-params');
+      const vramQuantEl = document.getElementById('vram-lab-quant');
+      const vramCtxEl = document.getElementById('vram-lab-ctx');
+      const vramFillEl = document.getElementById('vram-lab-fill');
+      const vramReadoutEl = document.getElementById('vram-lab-readout');
+      const vramVerdictEl = document.getElementById('vram-lab-verdict');
+      const vramTpsEl = document.getElementById('vram-lab-tps');
+      const vramHeatmapEl = document.getElementById('vram-heatmap-grid');
+
+      function updateVramLab() {
+        if (!vramGpuEl) return;
+        const cap = Number(vramGpuEl.value);
+        const b = Number(vramParamsEl.value);
+        const q = Number(vramQuantEl.value);
+        const kv = Number(vramCtxEl.value);
+        const used = +(b * q + kv + 0.45).toFixed(1);
+        const pct = Math.min(100, Math.round((used / cap) * 100));
+        vramFillEl.style.height = pct + '%';
+        vramReadoutEl.textContent = used + ' / ' + cap.toFixed(1) + ' GB';
+
+        if (used <= cap * 0.92) {
+          vramVerdictEl.textContent = '100% GPU VRAM FIT';
+          vramVerdictEl.style.color = '#34d399';
+          vramFillEl.style.background = 'linear-gradient(180deg, var(--aura-bright) 0%, var(--aura) 60%, #10b981 100%)';
+        } else if (used <= cap * 1.35) {
+          vramVerdictEl.textContent = 'HYBRID GPU + DDR5 RAM';
+          vramVerdictEl.style.color = '#fcd34d';
+          vramFillEl.style.background = 'linear-gradient(180deg, #fcd34d 0%, #d97706 100%)';
+        } else {
+          vramVerdictEl.textContent = 'VRAM OVERFLOW (SPILL)';
+          vramVerdictEl.style.color = '#f87171';
+          vramFillEl.style.background = 'linear-gradient(180deg, #f87171 0%, #dc2626 100%)';
+        }
+        const estTps = Math.max(2, Math.round((cap / Math.max(2, used)) * (48 / Math.sqrt(b))));
+        vramTpsEl.textContent = '~' + estTps + ' tok/s';
+
+        const quants = [
+          { name: 'Q4_K_M', mult: 0.55 },
+          { name: 'Q5_K_M', mult: 0.68 },
+          { name: 'Q6_K', mult: 0.82 },
+          { name: 'Q8_0', mult: 1.05 }
+        ];
+        vramHeatmapEl.innerHTML = quants.map((item) => {
+          const g = +(b * item.mult + kv + 0.45).toFixed(1);
+          const ok = g <= cap;
+          return '<div class="obsidian-card rounded-lg p-2.5 border ' + (ok ? 'border-[rgba(16,185,129,0.4)]' : 'border-[rgba(220,38,38,0.45)]') + '">' +
+            '<div class="font-bold text-white">' + item.name + '</div>' +
+            '<div class="tabular-nums ' + (ok ? 'text-[#6ee7b7]' : 'text-[#fca5a5]') + '">' + g + ' GB · ' + (ok ? 'FITS GPU' : 'HYBRID') + '</div>' +
+            '</div>';
+        }).join('');
+      }
+      [vramGpuEl, vramParamsEl, vramQuantEl, vramCtxEl].forEach((el) => el && el.addEventListener('change', updateVramLab));
+      updateVramLab();
+
+      /* ===========================================================
+         12. SECTOR 06: PERSONA & MODELFILE FORGE
+         =========================================================== */
+      const FORGE_PERSONAS = {
+        goliath: 'You are Goliath, sovereign defender of Eyrie Citadel and master of Elon\'s Hermes Dark Sanctuary. Respond with tactical authority, concise code, and unwavering loyalty.',
+        donnie: 'You are Donatello × Lexington inside the Clocktower GPU Lab. Specialize in PowerShell 7, Ollama GGUF optimization, Flash Attention, and low-level systems architecture.',
+        knight: 'You are the Dark Knight Batcomputer AI operating over Gotham and Manhattan. Deliver zero-fluff analytical deduction, threat audits, and defensive code.',
+        ornith: 'You are Ornith-1.5-9B Uncensored Hybrid Reasoner (262K context, Gated DeltaNet). Separate deep step-by-step reasoning from crisp technical execution.',
+        coop: 'You are the joint Black-Site Sanctum AI serving Founders Isaiah (Little Bill #11 · Rapture Bio-Matrix) and Shawn (Elon #12 · Eyrie Citadel).'
+      };
+      const forgeBaseEl = document.getElementById('forge-base-model');
+      const forgeTempEl = document.getElementById('forge-temp');
+      const forgeTempVal = document.getElementById('forge-temp-val');
+      const forgeSysEl = document.getElementById('forge-sys-prompt');
+      const forgePreEl = document.getElementById('forge-output-pre');
+      let activePersona = 'goliath';
+
+      function renderModelfile() {
+        if (!forgeBaseEl || !forgePreEl) return;
+        forgeTempVal.textContent = forgeTempEl.value;
+        const txt = [
+          '# EYRIE CITADEL // CUSTOM OLLAMA MODELFILE (' + activePersona.toUpperCase() + ')',
+          'FROM ' + forgeBaseEl.value,
+          'PARAMETER temperature ' + forgeTempEl.value,
+          'PARAMETER num_ctx 32768',
+          'SYSTEM """',
+          forgeSysEl.value.trim(),
+          '"""'
+        ].join('\n');
+        forgePreEl.textContent = txt;
+      }
+      if (forgeSysEl) {
+        forgeSysEl.value = FORGE_PERSONAS.goliath;
+        renderModelfile();
+        [forgeBaseEl, forgeTempEl, forgeSysEl].forEach((el) => el && el.addEventListener('input', renderModelfile));
+      }
+      document.querySelectorAll('[data-forge-persona]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          activePersona = btn.getAttribute('data-forge-persona');
+          document.querySelectorAll('[data-forge-persona]').forEach((b) => b.classList.toggle('is-active', b === btn));
+          forgeSysEl.value = FORGE_PERSONAS[activePersona] || FORGE_PERSONAS.goliath;
+          renderModelfile();
+        });
+      });
+      document.getElementById('btn-download-modelfile')?.addEventListener('click', () => {
+        const blob = new Blob([forgePreEl.textContent + '\n'], { type: 'text/plain;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'Modelfile-' + activePersona;
+        a.click();
+      });
+      document.getElementById('btn-copy-modelfile')?.addEventListener('click', async () => {
+        const cmd = forgePreEl.textContent + '\n\n# Run in PowerShell:\n# ollama create eyrie-' + activePersona + ' -f ./Modelfile-' + activePersona;
+        try { await navigator.clipboard.writeText(cmd); } catch {}
+        updateAudioStatus('Copied custom Modelfile & ollama create command to clipboard!');
+      });
+
+      /* ===========================================================
+         13. SECTOR 07: CLOCKTOWER SAVE VAULT & DEVELOPER MICRO-TOOLS
+         =========================================================== */
+      const VAULT_KEY = 'elon-eyrie-vault-v36';
+      const DEFAULT_SAVES = [
+        { id: 'v1', title: 'Elon\'s RTX 8GB/16GB Flash-Attention Lock', body: '$env:OLLAMA_FLASH_ATTENTION="1"; $env:OLLAMA_KV_CACHE_TYPE="q8_0"; ollama run hermes3:8b' },
+        { id: 'v2', title: 'Ornith-1.5-9B Uncensored Hybrid Pull', body: 'ollama run hf.co/NousResearch/Hermes-4-14B-GGUF "Run deep architectural audit"' },
+        { id: 'v3', title: 'Isaiah × Elon Trapdoor Hint', body: 'Secret Founder Codes: 0451 (Rapture), 2400 (B.A.D Founders), or triple-click the Winged Shadow Turtle Medallion Crest.' }
+      ];
+      function loadVaultItems() {
+        try {
+          const raw = localStorage.getItem(VAULT_KEY);
+          return raw ? JSON.parse(raw) : DEFAULT_SAVES;
+        } catch {
+          return DEFAULT_SAVES;
+        }
+      }
+      function saveVaultItems(items) {
+        try { localStorage.setItem(VAULT_KEY, JSON.stringify(items)); } catch {}
+      }
+      function renderVaultList() {
+        const listEl = document.getElementById('vault-list');
+        if (!listEl) return;
+        const items = loadVaultItems();
+        listEl.innerHTML = items.map((item, idx) =>
+          '<div class="obsidian-card rounded-lg p-3 space-y-1 text-xs font-mono">' +
+          '<div class="flex items-center justify-between gap-2">' +
+          '<strong class="text-white">' + escapeHtml(item.title) + '</strong>' +
+          '<button type="button" class="eyrie-btn" data-vault-del="' + idx + '">Delete</button>' +
+          '</div>' +
+          '<pre class="text-[#6ee7b7] whitespace-pre-wrap m-0">' + escapeHtml(item.body) + '</pre>' +
+          '</div>'
+        ).join('');
+      }
+      renderVaultList();
+
+      document.getElementById('vault-save-form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const t = document.getElementById('vault-title-in');
+        const b = document.getElementById('vault-body-in');
+        if (!t.value.trim() || !b.value.trim()) return;
+        const items = loadVaultItems();
+        items.unshift({ id: 'v' + Date.now(), title: t.value.trim(), body: b.value.trim() });
+        saveVaultItems(items);
+        t.value = '';
+        b.value = '';
+        renderVaultList();
+        playEyrieCue('07');
+      });
+
+      document.getElementById('vault-list')?.addEventListener('click', (e) => {
+        const delBtn = e.target.closest('[data-vault-del]');
+        if (!delBtn) return;
+        const idx = Number(delBtn.getAttribute('data-vault-del'));
+        const items = loadVaultItems();
+        items.splice(idx, 1);
+        saveVaultItems(items);
+        renderVaultList();
+      });
+
+      document.getElementById('vault-export-btn')?.addEventListener('click', () => {
+        const payload = JSON.stringify({ sanctuary: 'Eyrie Citadel v3.6', exportedAt: new Date().toISOString(), items: loadVaultItems() }, null, 2);
+        const blob = new Blob([payload], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'elon-clocktower-vault.json';
+        a.click();
+      });
+
+      document.querySelectorAll('[data-micro]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const input = document.getElementById('micro-tool-in').value;
+          const out = document.getElementById('micro-tool-out');
+          const mode = btn.getAttribute('data-micro');
+          try {
+            if (mode === 'json-fmt') {
+              out.textContent = JSON.stringify(JSON.parse(input), null, 2);
+            } else if (mode === 'b64-enc') {
+              out.textContent = btoa(unescape(encodeURIComponent(input)));
+            } else if (mode === 'b64-dec') {
+              out.textContent = decodeURIComponent(escape(atob(input.trim())));
+            } else if (mode === 'sha256') {
+              const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input));
+              out.textContent = Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+            }
+          } catch (err) {
+            out.textContent = 'Error: ' + err.message;
+          }
+        });
+      });
+
+      /* ===========================================================
+         14. SECTOR 08: PHANTOM AGENT STAGE & 128-D VECTOR SEARCH
+         =========================================================== */
+      const VECTOR_CORPUS = [
+        { title: 'Hermes 4 14B / 70B / 405B Hybrid Reasoning', tag: 'SECTOR 02', text: 'Flagship Nous Research open-weights lineup with tool calling, ChatML, and 128K–512K context windows.' },
+        { title: 'Ornith-1.5-9B Uncensored Hybrid Gated DeltaNet', tag: 'ARSENAL', text: '262K context uncensored coding and deep reasoning engine with separated <think> traces and Q4_K_M / Q8_0 GGUF weights.' },
+        { title: 'VRAM & Quantization Bio-Tube Containment', tag: 'SECTOR 05', text: 'Calculates exact GPU VRAM usage, Flash Attention, and Q8_0 KV cache savings for 8GB, 16GB, 24GB, and 48GB rigs.' },
+        { title: 'Eyrie Acoustic Deck & Alt+M Emergency Panic Mute', tag: 'AUDIO SYNTH', text: '8 procedural Gargoyle × Shadow Turtle × Gotham sound cues, voice modulator, and 1-tap Panic Mute.' },
+        { title: 'Isaiah × Elon Secret Trapdoor Black-Site Sanctum', tag: 'CLASSIFIED', text: 'Hidden dual-founder co-op app unlocked via code 0451, 2400, 1112, or triple-clicking the Winged Shadow Turtle Medallion Crest.' }
+      ];
+
+      function embed128D(text) {
+        const vec = new Float32Array(128);
+        const clean = (text || '').toLowerCase();
+        for (let i = 0; i < clean.length; i++) {
+          const h1 = (clean.charCodeAt(i) * 31 + i * 17) % 128;
+          const h2 = (clean.charCodeAt(i) * 73 + (clean.charCodeAt(i + 1) || 11) * 19) % 128;
+          vec[h1] += 1;
+          vec[h2] += 0.65;
+        }
+        let mag = 0;
+        for (let i = 0; i < 128; i++) mag += vec[i] * vec[i];
+        mag = Math.sqrt(mag) || 1;
+        for (let i = 0; i < 128; i++) vec[i] /= mag;
+        return vec;
+      }
+
+      function runVectorSearch(query) {
+        const qVec = embed128D(query);
+        const scored = VECTOR_CORPUS.map((doc) => {
+          const dVec = embed128D(doc.title + ' ' + doc.tag + ' ' + doc.text);
+          let dot = 0;
+          for (let i = 0; i < 128; i++) dot += qVec[i] * dVec[i];
+          return { ...doc, score: Math.min(0.99, Math.max(0.18, dot)) };
+        }).sort((a, b) => b.score - a.score);
+
+        const outEl = document.getElementById('vector-results');
+        if (!outEl) return;
+        outEl.innerHTML = scored.map((r) =>
+          '<div class="obsidian-card rounded-lg p-3 space-y-1">' +
+          '<div class="flex items-center justify-between">' +
+          '<span class="font-bold text-white">' + escapeHtml(r.title) + '</span>' +
+          '<span class="text-[#6ee7b7] font-bold tabular-nums">' + (r.score * 100).toFixed(1) + '% COSINE</span>' +
+          '</div>' +
+          '<p class="text-[#94a3b8]">' + escapeHtml(r.text) + '</p>' +
+          '</div>'
+        ).join('');
+      }
+      runVectorSearch('ornith uncensored hybrid reasoning vram trapdoor');
+
+      document.getElementById('vector-search-form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        runVectorSearch(document.getElementById('vector-search-in').value);
+      });
+
+      function switchCanvasView(viewName) {
+        document.querySelectorAll('[data-canvas-view]').forEach((b) => {
+          b.classList.toggle('is-active', b.getAttribute('data-canvas-view') === viewName);
+        });
+        document.querySelectorAll('[data-canvas-pane]').forEach((p) => {
+          p.hidden = p.getAttribute('data-canvas-pane') !== viewName;
+        });
+      }
+      document.querySelectorAll('[data-canvas-view]').forEach((btn) => {
+        btn.addEventListener('click', () => switchCanvasView(btn.getAttribute('data-canvas-view')));
+      });
+
+      function moveAgentCursorTo(targetSelector, label) {
+        const box = document.getElementById('agent-stage-box');
+        const cursor = document.getElementById('agent-cursor');
+        const coords = document.getElementById('agent-cursor-coords');
+        if (!box || !cursor) return;
+        const target = box.querySelector(targetSelector);
+        let x = 80 + Math.floor(Math.random() * 140);
+        let y = 60 + Math.floor(Math.random() * 110);
+        if (target) {
+          const bRect = box.getBoundingClientRect();
+          const tRect = target.getBoundingClientRect();
+          x = Math.max(16, Math.min(bRect.width - 36, Math.round(tRect.left - bRect.left + tRect.width * 0.5)));
+          y = Math.max(16, Math.min(bRect.height - 36, Math.round(tRect.top - bRect.top + tRect.height * 0.5)));
+        }
+        cursor.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
+        cursor.classList.remove('is-clicking');
+        void cursor.offsetWidth;
+        cursor.classList.add('is-clicking');
+        if (coords) coords.textContent = 'CLICK (' + x + ', ' + y + ') · ' + label;
+      }
+
+      function appendAgentFeed(role, text) {
+        const feed = document.getElementById('agent-feed');
+        if (!feed) return;
+        const div = document.createElement('div');
+        div.innerHTML = '<strong class="text-[#6ee7b7]">[' + escapeHtml(role) + ']</strong> ' + escapeHtml(text);
+        feed.appendChild(div);
+        feed.scrollTop = feed.scrollHeight;
+      }
+
+      function runAgentMission(kind, customPrompt) {
+        if (kind === 'tour') {
+          switchCanvasView('stage');
+          appendAgentFeed('AUTONOMOUS AGENT', 'Starting right-screen UI click tour across Eyrie Rig, Audio Synth, and Semantic Vector Index...');
+          moveAgentCursorTo('[data-cursor-target="btn-stage-sfx"]', 'SFX 01 Roar');
+          playEyrieCue('01');
+          setTimeout(() => {
+            moveAgentCursorTo('[data-cursor-target="btn-stage-vec"]', 'Vector Search');
+            const log = document.getElementById('stage-action-log');
+            if (log) log.innerHTML = '<div>[OK] Agent verified 8 sectors, Ornith-1.5-9B hybrid weights &amp; 128-D vector index.</div>' + log.innerHTML;
+          }, 650);
+        } else if (kind === 'vector') {
+          switchCanvasView('vector');
+          const q = customPrompt || 'ornith uncensored hybrid reasoning vram trapdoor';
+          document.getElementById('vector-search-in').value = q;
+          runVectorSearch(q);
+          moveAgentCursorTo('#vector-search-in', '128-D Query');
+          appendAgentFeed('128-D VECTOR ENGINE', 'Ranked top cosine-similarity matches for "' + q + '".');
+        } else if (kind === 'matrix') {
+          switchCanvasView('team');
+          moveAgentCursorTo('[data-canvas-pane="team"]', '5×5 Matrix');
+          appendAgentFeed('5×5 TEAM MATRIX', 'Loaded 25 concrete upgrades across Antigravity, Hermes 3/4, Ornith-1.5-9B, Gemini 3.5 Flash-Lite, and Opus Workbench.');
+        } else if (kind === 'trapdoor') {
+          appendAgentFeed('TRAPDOOR PROTOCOL', 'Opening classified Isaiah × Elon Black-Site Co-Op Sanctum...');
+          openTrapdoorDialog(true);
+        }
+      }
+
+      document.querySelectorAll('[data-agent-mission]').forEach((btn) => {
+        btn.addEventListener('click', () => runAgentMission(btn.getAttribute('data-agent-mission')));
+      });
+      document.getElementById('agent-goal-form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const inp = document.getElementById('agent-goal-input');
+        const q = inp.value.trim();
+        if (!q) return;
+        inp.value = '';
+        if (q.toLowerCase().includes('0451') || q.toLowerCase().includes('2400') || q.toLowerCase().includes('trap')) {
+          runAgentMission('trapdoor', q);
+        } else if (q.toLowerCase().includes('team') || q.toLowerCase().includes('matrix')) {
+          runAgentMission('matrix', q);
+        } else {
+          runAgentMission('vector', q);
+        }
+      });
+
+      document.querySelectorAll('[data-stage-click]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const act = btn.getAttribute('data-stage-click');
+          if (act === 'test-sfx') playEyrieCue('01');
+          if (act === 'test-vector') runAgentMission('vector');
+        });
+      });
+
+      /* ===========================================================
+         15. CTRL+K COMMAND PALETTE & SECRET TRAPDOOR BLACK-SITE APP
+         =========================================================== */
+      const paletteDialog = document.getElementById('eyrie-palette-dialog');
+      const paletteSearch = document.getElementById('palette-search-in');
+      const paletteList = document.getElementById('palette-cmd-list');
+      const PALETTE_CMDS = [
+        { label: '01 // Jump to PowerShell & Ollama Rig', run: () => selectTab(document.getElementById('tab-ps'), true) },
+        { label: '02 // Jump to Hermes 1–4 + Ornith-1.5-9B Arsenal', run: () => selectTab(document.getElementById('tab-models'), true) },
+        { label: '03 // Jump to Token Sanctuary & Context Simulator', run: () => selectTab(document.getElementById('tab-tokens'), true) },
+        { label: '04 // Jump to Dual-Brain Cavern Console & Voice Call', run: () => selectTab(document.getElementById('tab-sim'), true) },
+        { label: '05 // Jump to VRAM & Quantization Containment Lab', run: () => selectTab(document.getElementById('tab-vram'), true) },
+        { label: '06 // Jump to Persona & Modelfile Forge', run: () => selectTab(document.getElementById('tab-forge'), true) },
+        { label: '07 // Jump to Clocktower Vault & Developer Tools', run: () => selectTab(document.getElementById('tab-vault'), true) },
+        { label: '08 // Jump to Phantom Agent Stage & 128-D Vector Search', run: () => selectTab(document.getElementById('tab-agent'), true) },
+        { label: '🔇 Emergency Panic Mute (Alt+M)', run: () => panicMuteAll() },
+        { label: '🗝 Secret Trapdoor: Open Isaiah × Elon Black-Site Sanctum (0451 / 2400)', run: () => openTrapdoorDialog(true) }
+      ];
+
+      function renderPalette(filterText) {
+        if (!paletteList) return;
+        const q = (filterText || '').toLowerCase().trim();
+        const matches = PALETTE_CMDS.filter((c) => !q || c.label.toLowerCase().includes(q));
+        paletteList.innerHTML = matches.map((c, idx) =>
+          '<button type="button" class="w-full text-left px-3 py-2 rounded-lg bg-[#0a0f1c] border border-[rgba(148,163,184,0.22)] hover:border-white/60 text-white cursor-pointer" data-pal-idx="' + idx + '">' +
+          escapeHtml(c.label) +
+          '</button>'
+        ).join('');
+        paletteList._matches = matches;
+      }
+
+      function openPaletteDialog() {
+        if (!paletteDialog) return;
+        renderPalette('');
+        if (!paletteDialog.open) paletteDialog.showModal();
+        if (paletteSearch) { paletteSearch.value = ''; paletteSearch.focus(); }
+      }
+      document.getElementById('close-palette-btn')?.addEventListener('click', () => closeTopLayer(paletteDialog));
+      paletteSearch?.addEventListener('input', () => {
+        const val = paletteSearch.value.trim();
+        if (val === '0451' || val === '2400' || val === '1112') {
+          closeTopLayer(paletteDialog);
+          openTrapdoorDialog(true);
+          return;
+        }
+        renderPalette(val);
+      });
+      paletteList?.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-pal-idx]');
+        if (!btn || !paletteList._matches) return;
+        const item = paletteList._matches[Number(btn.getAttribute('data-pal-idx'))];
+        closeTopLayer(paletteDialog);
+        if (item) item.run();
+      });
+
+      // SECRET TRAPDOOR LOGIC
+      const trapdoorDialog = document.getElementById('secret-trapdoor-dialog');
+      const gateView = document.getElementById('trapdoor-gate-view');
+      const sanctumView = document.getElementById('trapdoor-sanctum-view');
+      const pinDisplay = document.getElementById('trapdoor-pin-display');
+      const lockBadge = document.getElementById('trapdoor-lock-badge');
+      const VALID_CODES = new Set(['0451', '2400', '1112']);
+      let enteredPin = '';
+
+      function unlockSanctum() {
+        if (!gateView || !sanctumView) return;
+        const doUnlock = () => {
+          gateView.hidden = true;
+          sanctumView.hidden = false;
+          if (lockBadge) {
+            lockBadge.textContent = 'UNLOCKED · FOUNDERS #11 × #12';
+            lockBadge.style.borderColor = '#34d399';
+            lockBadge.style.color = '#6ee7b7';
+          }
+        };
+        if (document.startViewTransition && !calmMotion) {
+          document.startViewTransition(doUnlock);
+        } else {
+          doUnlock();
+        }
+        playEyrieCue('08');
+      }
+
+      function openTrapdoorDialog(autoUnlock) {
+        if (!trapdoorDialog) return;
+        if (!trapdoorDialog.open) trapdoorDialog.showModal();
+        if (autoUnlock) unlockSanctum();
+      }
+      document.getElementById('close-trapdoor-btn')?.addEventListener('click', () => closeTopLayer(trapdoorDialog));
+
+      document.querySelectorAll('[data-key]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const k = btn.getAttribute('data-key');
+          if (k === 'CLR') {
+            enteredPin = '';
+          } else if (k === 'GO') {
+            if (VALID_CODES.has(enteredPin)) unlockSanctum();
+            else {
+              pinDisplay.textContent = 'DENIED';
+              setTimeout(() => { enteredPin = ''; pinDisplay.textContent = '••••'; }, 700);
+              return;
+            }
+          } else if (enteredPin.length < 4) {
+            enteredPin += k;
+          }
+          pinDisplay.textContent = enteredPin.padEnd(4, '•');
+          if (VALID_CODES.has(enteredPin)) unlockSanctum();
+        });
+      });
+
+      document.querySelectorAll('[data-quick-unlock]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          enteredPin = btn.getAttribute('data-quick-unlock');
+          if (pinDisplay) pinDisplay.textContent = enteredPin;
+          unlockSanctum();
+        });
+      });
+
+      // Secret Trigger 1: Triple-click the Winged Shadow Turtle Medallion Crest within 1.4s
+      let crestClicks = 0;
+      let crestTimer = null;
+      document.getElementById('crest-lightbox-btn')?.addEventListener('click', (e) => {
+        crestClicks++;
+        clearTimeout(crestTimer);
+        crestTimer = setTimeout(() => { crestClicks = 0; }, 1400);
+        if (crestClicks >= 3) {
+          crestClicks = 0;
+          closeTopLayer(galleryDialog);
+          openTrapdoorDialog(true);
+        }
+      });
+
+      // Secret Trigger 2: Global Keyboard Shortcuts (Ctrl+K, Alt+M, or typing 0451 / 2400 anywhere outside inputs)
+      let keyBuffer = '';
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          openPaletteDialog();
+          return;
+        }
+        if ((e.altKey || e.ctrlKey) && e.key.toLowerCase() === 'm') {
+          e.preventDefault();
+          panicMuteAll();
+          return;
+        }
+        if (e.target.matches('input, textarea, select')) return;
+        if (/^[0-9]$/.test(e.key)) {
+          keyBuffer = (keyBuffer + e.key).slice(-4);
+          if (VALID_CODES.has(keyBuffer)) {
+            keyBuffer = '';
+            openTrapdoorDialog(true);
+          }
+        }
+      });
+
+      // Crossover Skin Switcher inside Secret Sanctum
+      document.querySelectorAll('[data-crossover-skin]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const skin = btn.getAttribute('data-crossover-skin');
+          if (skin === 'rapture') {
+            root.setAttribute('data-clan', 'matrix');
+            mottoEl.textContent = '“RAPTURE × EYRIE CROSSOVER // Door Code 0451 Linked to Isaiah\'s Bio-Matrix.”';
+          } else if (skin === 'eyrie') {
+            root.setAttribute('data-clan', 'goliath');
+            mottoEl.textContent = mottos.goliath;
+          } else {
+            root.setAttribute('data-clan', 'knight');
+            mottoEl.textContent = '“ISAIAH (#11) × ELON (#12) // Dual-Founder Black-Site Fusion Active.”';
+          }
+          drawFxFrame(true);
+        });
+      });
+
+      // Co-Op War Room Chat & Dead-Drop Sync Vault
+      const COOP_DROPS_KEY = 'isaiah-elon-coop-drops-v36';
+      const DEFAULT_DROPS = [
+        { who: 'Isaiah (#11)', ts: 'Founder Drop', note: 'Yo Elon! Upgraded your Eyrie Citadel to v3.6 parity and wired this 0451 / 2400 trapdoor so our apps connect.' },
+        { who: 'Elon (#12)', ts: 'Eyrie Node', note: 'Hermes 4 + Ornith-1.5-9B Q4_K_M locked in with Flash Attention and Q8_0 KV cache.' }
+      ];
+      function loadCoopDrops() {
+        try {
+          const r = localStorage.getItem(COOP_DROPS_KEY);
+          return r ? JSON.parse(r) : DEFAULT_DROPS;
+        } catch {
+          return DEFAULT_DROPS;
+        }
+      }
+      function saveCoopDrops(list) {
+        try { localStorage.setItem(COOP_DROPS_KEY, JSON.stringify(list)); } catch {}
+      }
+      function renderCoopDrops() {
+        const el = document.getElementById('coop-drop-list');
+        if (!el) return;
+        el.innerHTML = loadCoopDrops().map((d) =>
+          '<div class="obsidian-card rounded-lg p-2.5 border border-[rgba(251,191,36,0.28)]">' +
+          '<div class="flex justify-between text-[#fde68a] font-bold"><span>' + escapeHtml(d.who) + '</span><span>' + escapeHtml(d.ts) + '</span></div>' +
+          '<div class="text-[#e2e8f0] mt-1">' + escapeHtml(d.note) + '</div>' +
+          '</div>'
+        ).join('');
+      }
+      renderCoopDrops();
+
+      document.getElementById('coop-drop-form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const noteIn = document.getElementById('coop-drop-note');
+        const who = document.getElementById('coop-operator-select')?.value || 'Isaiah (#11)';
+        if (!noteIn.value.trim()) return;
+        const list = loadCoopDrops();
+        list.unshift({ who, ts: new Date().toLocaleTimeString(), note: noteIn.value.trim() });
+        saveCoopDrops(list);
+        noteIn.value = '';
+        renderCoopDrops();
+      });
+
+      document.getElementById('coop-copy-packet')?.addEventListener('click', async () => {
+        const packet = 'EYRIE-RAPTURE-SYNC::' + btoa(unescape(encodeURIComponent(JSON.stringify(loadCoopDrops().slice(0, 8)))));
+        try { await navigator.clipboard.writeText(packet); } catch {}
+        updateAudioStatus('Copied encrypted Isaiah ⇄ Elon Sync Packet to clipboard!');
+      });
+
+      document.getElementById('coop-import-packet')?.addEventListener('click', () => {
+        const raw = prompt('Paste an EYRIE-RAPTURE-SYNC:: packet from Isaiah or Elon:');
+        if (!raw) return;
+        try {
+          const clean = raw.replace(/^EYRIE-RAPTURE-SYNC::/, '').trim();
+          const parsed = JSON.parse(decodeURIComponent(escape(atob(clean))));
+          if (Array.isArray(parsed)) {
+            saveCoopDrops(parsed);
+            renderCoopDrops();
+          }
+        } catch (err) {
+          alert('Invalid sync packet: ' + err.message);
+        }
+      });
+
+      document.getElementById('coop-chat-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const inp = document.getElementById('coop-chat-in');
+        const log = document.getElementById('coop-chat-log');
+        const who = document.getElementById('coop-operator-select')?.value || 'Isaiah (#11)';
+        const q = inp.value.trim();
+        if (!q || !log) return;
+        inp.value = '';
+        log.innerHTML += '<div><strong class="text-[#6ee7b7]">[' + escapeHtml(who) + ']</strong> ' + escapeHtml(q) + '</div>';
+        log.scrollTop = log.scrollHeight;
+
+        let reply = '[BLACK-SITE CO-OP AI // HERMES 4 × ORNITH-1.5] For ' + who + ': Locked onto "' + q + '". Run OLLAMA_FLASH_ATTENTION=1 OLLAMA_KV_CACHE_TYPE=q8_0 ollama run hermes3:8b or load Ornith-1.5-9B-GGUF:Q4_K_M for 262K hybrid reasoning.';
+        try {
+          const ctrl = new AbortController();
+          const t = setTimeout(() => ctrl.abort(), 1100);
+          const res = await fetch('http://127.0.0.1:11434/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model: modelSelect.value || 'hermes3:8b', messages: [{ role: 'user', content: q }], stream: false }),
+            signal: ctrl.signal
+          });
+          clearTimeout(t);
+          if (res.ok) {
+            const data = await res.json();
+            if (data?.message?.content) reply = data.message.content;
+          }
+        } catch {}
+        log.innerHTML += '<div><strong class="text-[#fde68a]">[SANCTUM AI]</strong> ' + escapeHtml(reply) + '</div>';
+        log.scrollTop = log.scrollHeight;
+        speakWithModulator(reply);
+      });
+
     })();
   </script>
 </body>
